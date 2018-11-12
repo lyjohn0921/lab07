@@ -133,8 +133,9 @@ static int op_showall(struct tokenStack *stack)
   int t;
 
   if (stack->top <= 0) {
-    fprintf(stderr,"S: show an empty stack, aborting\n");
-    exit(1);
+		fprintf(stderr,"S: show an empty stack, aborting\n");
+    return (0);
+
   }
   
   
