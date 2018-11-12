@@ -162,14 +162,18 @@ static int op_product(struct tokenStack *stack){
 }
 
 static int op_divide(struct tokenStack *stack){
-	int v1, v2;
+	int v1, v2, v3;
   v1 = popInt(stack);
-  if (v1 == 0){
-		fprintf(stderr,"n2: n1 devide to 0 aborted\n");
-    exit(1);
-	}
   v2 = popInt(stack);
-  pushInt(stack, v2 / v1);
+  v3 = 0;
+  if (v1 == 0){
+		fprintf(stderr,"n2: n1 devide to 0 error\n");
+	}else{
+		v3 = v2 / v1;
+	  pushInt(stack, v3);
+
+	}
+  
   return(0);
 }
 
@@ -223,11 +227,13 @@ static int op_rem(struct tokenStack *stack){
 	int v1, v2, v3;
   v1 = popInt(stack);
   v2 = popInt(stack);
+  v3 = 0;
 	if (v1 == 0){
 		fprintf(stderr,"n2: n1 devide to 0 aborted\n");
-    exit(1);
-	}
+ 
+	}else{
   v3 = (v2 % v1);
   pushInt(stack, v3);
+	}
   return(0);
 }
