@@ -23,23 +23,24 @@ static int op_rem(struct tokenStack *stack);
 
 static struct operator_struct {
   char *name;
+  char *doc;
   int (*fn_ptr)(struct tokenStack *);
 } ops[] = {
-  {"quit", op_quit},
-  {"print", op_print},
-  {"dump", op_dump},
-  {"+", op_add},
-  {"-", op_minus},
-  {"*", op_product},
-  {"/", op_divide},
-  {"DROP", op_drop},
-  {"HELP", op_help},
-  {"S", op_showall},
-  {"SWAP", op_swap},
-  {"ROT", op_rot},
-  {"ROTMINUS", op_rotm},
-  {"MODQUOT", op_rem},
-  {(char *)NULL, (int(*)(struct tokenStack *)) NULL}
+  {"quit", "just exit", op_quit},
+  {"print", "pop out last token on stack", op_print},
+  {"dump", "show all token with type", op_dump},
+  {"+", "push n1 + n2",op_add},
+  {"-", "push n1 - n2",op_minus},
+  {"*", " (n1 n2 — product) - push n1*n2",op_product},
+  {"/", "(n1 n2 — quotient) - push n1/n2",op_divide},
+  {"DROP", "(n1 — ) - drop the top element off of the stack",op_drop},
+  {"HELP", "(—) - print out all commands plus a line of documentation. Note: This is made easier due to the help string in the table",op_help},
+  {"S", " print all elements on the stack non destructively",op_showall},
+  {"SWAP", "(n1 n2 — n2 n1) - swap the order of the top two elements on the stack ", op_swap},
+  {"ROT", "(n1 n2 n3 — n2 n3 n1) - rotate top 3 elements on the stack ",op_rot},
+  {"ROTMINUS", "n1 n2 n3 — n3 n1 n2) - rotate top 3 elements on the stack", op_rotm},
+  {"MODQUOT", "n1 n2 — rem quotient) - push remainder then quotient ", op_rem},
+  {(char *)NULL, (char *)NULL, (int(*)(struct tokenStack *)) NULL}
 };
 
 
@@ -163,6 +164,10 @@ static int op_product(struct tokenStack *stack){
 static int op_divide(struct tokenStack *stack){
 	int v1, v2;
   v1 = popInt(stack);
+  if (v1 == 0){
+		fprintf(stderr,"n2: n1 devide to 0 aborted\n");
+    exit(1);
+	}
   v2 = popInt(stack);
   pushInt(stack, v2 / v1);
   return(0);
@@ -176,7 +181,7 @@ static int op_drop(struct tokenStack *stack){
 static int op_help(struct tokenStack *stack){
 	struct operator_struct *op = ops;
   for(op=ops;op->name != (char *)NULL; op++) {
-    fprintf(stdout, "%s\n", op->name);
+    fprintf(stdout, "%s %s\n", op->name, op->doc);
       
   }
   return (0);
@@ -218,8 +223,11 @@ static int op_rem(struct tokenStack *stack){
 	int v1, v2, v3;
   v1 = popInt(stack);
   v2 = popInt(stack);
+	if (v1 == 0){
+		fprintf(stderr,"n2: n1 devide to 0 aborted\n");
+    exit(1);
+	}
   v3 = (v2 % v1);
-
   pushInt(stack, v3);
   return(0);
 }
